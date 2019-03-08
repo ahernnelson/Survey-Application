@@ -1,6 +1,6 @@
 # Wrap shinymaterial apps in material_page
 pacman::p_load("shiny","shinymaterial","ggplot2","plotly","dplyr","scales")
-#source("setup.R")
+source("setup.R")
 ### UI #########################
 ui <- material_page(
   title = "MSU Denver Faculty Equity Survey",
@@ -13,7 +13,7 @@ ui <- material_page(
         "Discrimination" = "discrim_tab",
         "Campus Climate" = "climate_tab"
       ),
-      icons = c("cast","inset_chart")
+      icons = c("pie_chart","insert_chart","insert_chart")
     )
   ),
 ### Diversity Tab ####################
@@ -91,10 +91,22 @@ ui <- material_page(
     side_nav_tab_id = "climate_tab",
     material_tabs(
       tabs = c(
-        "Value On Campus" = "first_tab",
-        "Fair Compensation" = "second_tab",
-        "Effectivenes of Staff" = "third_tab"
+        "Value On Campus" = "value_tab",
+        "Fair Compensation" = "pay_tab",
+        "Effectivenes of Groups" = "group_tab"
       )
+    ),
+    material_tab_content(
+      tab_id = "value_tab",
+      plotlyOutput("value_plot")
+    ),
+    material_tab_content(
+      tab_id = "pay_tab",
+      plotlyOutput("pay_plot")
+    ),
+    material_tab_content(
+      tab_id = "group_tab",
+      plotlyOutput("group_plot")
     )
   )
 )
