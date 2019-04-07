@@ -32,31 +32,84 @@ ui <- material_page(
     ),
     material_tab_content(
       tab_id = "religion_tab",
-      plotlyOutput("religion_plot")
+      tags$h2("Survey Demographics"),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(
+          plotlyOutput("religion_plot")
+        ),
+        material_column(
+          plotlyOutput("race_plot")
+        )
+      ),
+      material_row(
+        width = 1.2,
+        height = 2,
+        material_column(
+          plotlyOutput("age_plot")
+        ),
+        material_column(
+          plotlyOutput("gender_plot")
+        )
+      ),
+      material_row(
+        width = 1.2,
+        height = 1,
+        material_column(plotlyOutput("college_plot")),
+        material_column(plotlyOutput("faculty_plot"))
+      )
     ),
     material_tab_content(
       tab_id = "race_tab",
-      plotlyOutput("race_plot")
+      tags$h2("Survey Demographics"),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(
+          plotlyOutput("religion_bar")
+        ),
+        material_column(
+          plotlyOutput("race_bar")
+        )
+      ),
+      material_row(
+        width = 1.2,
+        height = 2,
+        material_column(
+          plotlyOutput("age_bar")
+        ),
+        material_column(
+          plotlyOutput("gender_bar")
+        )
+      ),
+      material_row(
+        width = 1.2,
+        height = 1,
+        material_column(plotlyOutput("college_bar")),
+        material_column(plotlyOutput("faculty_bar"))
+      )
+      #plotlyOutput("race_plot")
     ),
     material_tab_content(
-      tab_id = "age_tab",
-      plotlyOutput("age_plot")
+      tab_id = "age_tab"
+      #plotlyOutput("age_plot")
     ),
     material_tab_content(
-      tab_id = "gender_tab",
-      plotlyOutput("gender_plot")
+      tab_id = "gender_tab"
+      #plotlyOutput("gender_plot")
     ),
     material_tab_content(
-      tab_id = "sex_tab",
-      plotlyOutput("sex_plot")
+      tab_id = "sex_tab"
+      #plotlyOutput("sex_plot")
     ),
     material_tab_content(
-      tab_id = "college_tab",
-      plotlyOutput("college_plot")
+      tab_id = "college_tab"
+      #plotlyOutput("college_plot")
     ),
     material_tab_content(
-      tab_id = "faculty_tab",
-      plotlyOutput("faculty_plot")
+      tab_id = "faculty_tab"
+      #plotlyOutput("faculty_plot")
     )
   ),
 ### Discrimination Tab ###############
@@ -87,6 +140,7 @@ ui <- material_page(
       plotlyOutput("comfort_plot")
     )
   ),
+### Campus Climate Tab ###################
   material_side_nav_tab_content(
     side_nav_tab_id = "climate_tab",
     material_tabs(
@@ -114,7 +168,7 @@ ui <- material_page(
 server <- function(input, output) {
 ### Diversity Server ##############
   output$religion_plot <- renderPlotly({
-    py %>% config(displayModeBar=F)
+    py_religion %>% config(displayModeBar=F)
   })
   output$race_plot <- renderPlotly({
     py_race %>% config(displayModeBar=F)
@@ -133,6 +187,28 @@ server <- function(input, output) {
   })
   output$faculty_plot <- renderPlotly({
     py_faculty %>% config(displayModeBar=F)
+  })
+  ## bars ###
+  output$religion_bar <- renderPlotly({
+    bar_religion %>% ggplotly() %>% config(displayModeBar=F)
+  })
+  output$race_bar <- renderPlotly({
+    bar_race %>% ggplotly() %>% config(displayModeBar=F)
+  })
+  output$age_bar <- renderPlotly({
+    bar_age %>% ggplotly() %>% config(displayModeBar=F)
+  })
+  output$gender_bar <- renderPlotly({
+    bar_gender %>% ggplotly() %>% config(displayModeBar=F)
+  })
+  output$sex_bar <- renderPlotly({
+    bar_sex %>% ggplotly()  %>% config(displayModeBar=F)
+  })
+  output$college_bar <- renderPlotly({
+    bar_college %>% ggplotly()  %>% config(displayModeBar=F)
+  })
+  output$faculty_bar <- renderPlotly({
+    bar_faculty %>% ggplotly() %>% config(displayModeBar=F)
   })
 ### Discimination Server ########## 
   output$discrim_plot <- renderPlotly({
