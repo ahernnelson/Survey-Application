@@ -1,5 +1,5 @@
 # Wrap shinymaterial apps in material_page
-pacman::p_load("shiny","shinymaterial","ggplot2","plotly","dplyr","scales")
+pacman::p_load("shiny","shinymaterial","DT")
 source("setup.R")
 ### UI #########################
 ui <- material_page(
@@ -9,11 +9,20 @@ ui <- material_page(
     fixed = F,
     material_side_nav_tabs(
       side_nav_tabs = c(
-        "Diversity" = "diversity_tab",
-        "Discrimination" = "discrim_tab",
-        "Campus Climate" = "climate_tab"
+        "Introduction" = "intro_tab",
+        "Demographics" = "diversity_tab",
+        "Discrimination on Campus" = "discrim_tab",
+        "Campus Climate" = "climate_tab",
+        "Retention and Affiliate Benefits" = "affil_tab"
       ),
-      icons = c("pie_chart","insert_chart","insert_chart")
+      icons = c("mood","pie_chart","insert_chart","insert_chart", "insert_chart")
+    )
+  ),
+### Introduction tabb ###########
+  material_side_nav_tab_content(
+    side_nav_tab_id = "intro_tab",
+    material_card(
+      includeMarkdown("include.md")
     )
   ),
 ### Diversity Tab ####################
@@ -21,95 +30,82 @@ ui <- material_page(
     side_nav_tab_id = "diversity_tab",
     material_tabs(
       tabs = c(
-      "Religion" = "religion_tab",
-      "Race" = "race_tab",
-      "Age" = "age_tab",
-      "Gender" = "gender_tab",
-      "Sexual Orientation" = "sex_tab",
-      "College of" = "college_tab",
-      "Faculty Appointment" = "faculty_tab"
+        "Bar Charts" = "bar_tab",
+        "Table of counts" = "table_tab"
       )
     ),
     material_tab_content(
-      tab_id = "religion_tab",
+      tab_id = "bar_tab",
       tags$h2("Survey Demographics"),
-      material_row(
-        width=1.2,
-        height = 1.2,
-        material_column(
-          plotlyOutput("religion_plot")
-        ),
-        material_column(
-          plotlyOutput("race_plot")
-        )
-      ),
-      material_row(
-        width = 1.2,
-        height = 2,
-        material_column(
-          plotlyOutput("age_plot")
-        ),
-        material_column(
-          plotlyOutput("gender_plot")
-        )
-      ),
-      material_row(
-        width = 1.2,
-        height = 1,
-        material_column(plotlyOutput("college_plot")),
-        material_column(plotlyOutput("faculty_plot"))
-      )
-    ),
-    material_tab_content(
-      tab_id = "race_tab",
-      tags$h2("Survey Demographics"),
-      material_row(
-        width=1.2,
-        height = 1.2,
-        material_column(
-          plotlyOutput("religion_bar")
-        ),
-        material_column(
-          plotlyOutput("race_bar")
-        )
-      ),
-      material_row(
-        width = 1.2,
-        height = 2,
-        material_column(
-          plotlyOutput("age_bar")
-        ),
-        material_column(
-          plotlyOutput("gender_bar")
-        )
-      ),
       material_row(
         width = 1.2,
         height = 1,
         material_column(plotlyOutput("college_bar")),
         material_column(plotlyOutput("faculty_bar"))
+      ),
+      material_row(
+        width = 1.2,
+        height = 2,
+        material_column(plotlyOutput("age_bar")),
+        material_column(plotlyOutput("gender_bar"))
+      ),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(plotlyOutput("religion_bar")),
+        material_column(plotlyOutput("sex_bar"))
+      ),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(plotlyOutput("veteran_bar")),
+        material_column(plotlyOutput("disability_bar"))
+      ),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(plotlyOutput("race_bar"))
       )
-      #plotlyOutput("race_plot")
     ),
     material_tab_content(
-      tab_id = "age_tab"
-      #plotlyOutput("age_plot")
-    ),
-    material_tab_content(
-      tab_id = "gender_tab"
-      #plotlyOutput("gender_plot")
-    ),
-    material_tab_content(
-      tab_id = "sex_tab"
-      #plotlyOutput("sex_plot")
-    ),
-    material_tab_content(
-      tab_id = "college_tab"
-      #plotlyOutput("college_plot")
-    ),
-    material_tab_content(
-      tab_id = "faculty_tab"
-      #plotlyOutput("faculty_plot")
+      tab_id = "table_tab",
+      tags$h2("Tables of Survey Demographics"),
+      material_row(
+        width = 1.2,
+        height = 1,
+        material_column(material_card(title="College",DTOutput("college_table"))),
+        material_column(material_card(title="Faculty",DTOutput("faculty_table")))
+      ),
+      material_row(
+        width = 1.2,
+        height = 2,
+        material_column(material_card(title = "Age",DTOutput("age_table"))),
+        material_column(material_card(title="Gender",DTOutput("gender_table")))
+      ),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(
+          material_card(title="Religion",DTOutput("religion_table"))),
+        material_column(
+          material_card(title = "Sexual Orientation",DTOutput("sex_table")))
+      ),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(
+          material_card(
+            title = "Veteran",
+            DTOutput("veteran_table")
+          )
+        ),
+        material_column(material_card(title="Disabled",DTOutput("disability_table")))
+      ),
+      material_row(
+        width=1.2,
+        height = 1.2,
+        material_column(material_card(title="Race",DTOutput("race_table")))
+      )
     )
   ),
 ### Discrimination Tab ###############
@@ -126,18 +122,36 @@ ui <- material_page(
     material_tab_content(
       tab_id = "first_tab",
       tags$h1("Discrimination on Campus"),
-      plotlyOutput("discrim_plot")
-  
+      material_row(
+        plotlyOutput("discrim_plot")
+      ),
+      material_parallax(image_source = "cat1.gif"),
+      material_row(
+        material_column(material_card(DTOutput("discrim_table"))),
+        material_column(material_card(DTOutput("witness_table")))
+      )
     ),
     material_tab_content(
       tab_id = "second_tab",
       tags$h1("Percent Respond Likely to Report"),
-      plotlyOutput("report_plot")
+      material_row(
+        plotlyOutput("report_plot")
+      ),
+      material_parallax(image_source = "cat2.gif"),
+      material_row(
+       material_card(DTOutput("report_table"))
+      )
     ),
     material_tab_content(
       tab_id = "third_tab",
       tags$h1("Percent Comfortable Disclosing Identity"),
-      plotlyOutput("comfort_plot")
+      material_row(
+        plotlyOutput("comfort_plot")
+      ),
+      material_parallax(image_source = "cat3.gif"),
+      material_row(
+        material_card(DTOutput("comfort_table"))
+      )
     )
   ),
 ### Campus Climate Tab ###################
@@ -152,65 +166,107 @@ ui <- material_page(
     ),
     material_tab_content(
       tab_id = "value_tab",
-      plotlyOutput("value_plot")
+      material_row(plotlyOutput("value_plot")),
+      material_parallax(image_source = "cat4.gif"),
+      material_row(material_card(DTOutput("value_table")))
     ),
     material_tab_content(
       tab_id = "pay_tab",
-      plotlyOutput("pay_plot")
+      material_row(plotlyOutput("pay_plot")),
+      material_parallax(image_source = "cat5.gif"),
+      material_row(material_card(DTOutput("pay_table")))
     ),
     material_tab_content(
       tab_id = "group_tab",
-      plotlyOutput("group_plot")
+      material_row(plotlyOutput("group_plot")),
+      material_parallax(image_source = "cat6.gif"),
+      material_row(material_card(DTOutput("group_table")))
+    )
+  ),
+### Faculty tab ################
+  material_side_nav_tab_content(
+    side_nav_tab_id = "affil_tab",
+    material_tabs(
+      tabs = c(
+        "Faculty Retention" = "retention_tab",
+        "Affiliate Benefits" = "affil_b_tab"
+      )
+    ),
+    material_tab_content(
+      tab_id = "retention_tab",
+      material_row(plotlyOutput("retention_plot")),
+      material_parallax(image_source = "cat7.gif"),
+      material_row(material_card(DTOutput("retention_table")))
+    ),
+    material_tab_content(
+      tab_id = "affil_b_tab",
+      material_row(plotlyOutput("affil_plot")),
+      material_parallax(image_source = "cat8.gif"),
+      material_row(material_card(DTOutput("affil_table")))
     )
   )
 )
 ### Server ########################
 server <- function(input, output) {
 ### Diversity Server ##############
-  output$religion_plot <- renderPlotly({
-    py_religion %>% config(displayModeBar=F)
-  })
-  output$race_plot <- renderPlotly({
-    py_race %>% config(displayModeBar=F)
-  })
-  output$age_plot <- renderPlotly({
-    py_age %>% config(displayModeBar=F)
-  })
-  output$gender_plot <- renderPlotly({
-    py_gender %>% config(displayModeBar=F)
-  })
-  output$sex_plot <- renderPlotly({
-    py_sex %>% config(displayModeBar=F)
-  })
-  output$college_plot <- renderPlotly({
-    py_college %>% config(displayModeBar=F)
-  })
-  output$faculty_plot <- renderPlotly({
-    py_faculty %>% config(displayModeBar=F)
-  })
-  ## bars ###
+  ## bars ##############
   output$religion_bar <- renderPlotly({
-    bar_religion %>% ggplotly() %>% config(displayModeBar=F)
+    bar_religion %>% ggplotly(tooltip="text") %>% config(displayModeBar=F)
   })
   output$race_bar <- renderPlotly({
-    bar_race %>% ggplotly() %>% config(displayModeBar=F)
+    bar_race %>% ggplotly(tooltip="text") %>% config(displayModeBar=F)
   })
   output$age_bar <- renderPlotly({
-    bar_age %>% ggplotly() %>% config(displayModeBar=F)
+    bar_age %>% ggplotly(tooltip="text") %>% config(displayModeBar=F)
   })
   output$gender_bar <- renderPlotly({
-    bar_gender %>% ggplotly() %>% config(displayModeBar=F)
+    bar_gender %>% ggplotly(tooltip="text") %>% config(displayModeBar=F)
   })
   output$sex_bar <- renderPlotly({
-    bar_sex %>% ggplotly()  %>% config(displayModeBar=F)
+    bar_sex %>% ggplotly(tooltip="text")  %>% config(displayModeBar=F)
   })
   output$college_bar <- renderPlotly({
-    bar_college %>% ggplotly()  %>% config(displayModeBar=F)
+    bar_college %>% ggplotly(tooltip="text")  %>% config(displayModeBar=F)
   })
   output$faculty_bar <- renderPlotly({
-    bar_faculty %>% ggplotly() %>% config(displayModeBar=F)
+    bar_faculty %>% ggplotly(tooltip="text") %>% config(displayModeBar=F)
+  })
+  output$veteran_bar <- renderPlotly({
+    bar_veteran %>% ggplotly(tooltip="text") %>% config(displayModeBar=F)
+  })
+  output$disability_bar <- renderPlotly({
+    bar_disable %>% ggplotly(tooltip="text") %>% config(displayModeBar=F)
+  })
+  ## tables ########
+  output$religion_table <- renderDT({
+    select(df_religion,-plot_text) %>% datatable(options = list(dom = 't'))
+  })
+  output$race_table <- renderDT({    
+    select(df_race,-plot_text) %>% datatable(options = list(dom = 't'))
+    })
+  output$age_table <- renderDT({
+    select(df_age,-plot_text) %>% datatable(options = list(dom = 't'))
+  })
+  output$gender_table <- renderDT({
+    select(df_gender,-plot_text) %>% datatable(options = list(dom = 't'))
+  })
+  output$sex_table <- renderDT({
+    select(df_sex,-plot_text) %>% datatable(options = list(dom = 't'))
+  })
+  output$college_table <- renderDT({
+   select(df_college,-plot_text) %>% datatable(options = list(dom = 't'))
+  })
+  output$faculty_table <- renderDT({
+    select(df_faculty,-plot_text) %>% datatable(options = list(dom = 't'))
+  })
+  output$veteran_table <- renderDT({
+    select(df_veteran,-plot_text) %>% datatable(options = list(dom = 't'))
+  })
+  output$disability_table <- renderDT({
+    select(df_disable,-plot_text) %>% datatable(options = list(dom = 't'))
   })
 ### Discimination Server ########## 
+  ### PLots #################
   output$discrim_plot <- renderPlotly({
     ggplotly(p,height=600,tooltip="text") %>% config(displayModeBar=F)
   })
@@ -220,8 +276,22 @@ server <- function(input, output) {
   output$comfort_plot <- renderPlotly({
     ggplotly(p2,height = 600,tooltip="text") %>% config(displayModeBar=F)
   })
-
+  
+  ### Tables ##################
+  output$discrim_table <- renderDT(
+    discrim_table %>% datatable(options = list(dom='t'))
+  )
+  output$witness_table <- renderDT(
+    witness_table %>% datatable(options = list(dom='t'))
+  )
+  output$report_table <- renderDT(
+    report_table %>% datatable(options = list(dom='t'))
+  )
+  output$comfort_table <- renderDT(
+    comfort_table %>% datatable(options = list(dom='t'))
+  )
 ### Campus Climate Server ###########
+  ### plots ############
   output$value_plot <- renderPlotly({
     ggplotly(value_plot,height=600,tooltip="text") %>% config(displayModeBar=F)
   })
@@ -230,6 +300,31 @@ server <- function(input, output) {
   })
   output$group_plot <- renderPlotly({
     ggplotly(group_plot,height=600,tooltip="text") %>% config(displayModeBar=F)
+  })
+  ### tables ###################
+  output$value_table <- renderDT({
+    value_table %>% datatable(options = list(dom='t'))
+  })
+  output$pay_table <- renderDT({
+    pay_table %>% datatable(options = list(dom='t'))
+  })
+  output$group_table <- renderDT({
+    group_table %>% datatable(options = list(dom='t'))
+  })
+### Faculty Server ##############
+  ### plots ################
+  output$retention_plot <- renderPlotly({
+    ggplotly(retention_plot,height=600,tooltip="text") %>% config(displayModeBar=F)
+  })
+  output$affil_plot <- renderPlotly({
+    ggplotly(affil_plot,height=600,tooltip="text") %>% config(displayModeBar=F)
+  })
+  ### tables #############
+  output$retention_table <- renderDT({
+    retention_table %>% datatable(options = list(dom='t'))
+  })
+  output$affil_table <- renderDT({
+    affil_table %>% datatable(options = list(dom='t'))
   })
 }
 shinyApp(ui = ui, server = server)
