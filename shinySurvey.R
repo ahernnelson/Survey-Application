@@ -2,7 +2,7 @@ library(shiny)
 pacman::p_load("ggplot2","dplyr","plotly","ggsci","shinythemes","scales")
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 
-my_data_raw <- read.csv("FES_2019_responses_collapsed_forApp.csv", row.names = 1, header = TRUE)
+my_data_raw <- read.csv("survey.csv", row.names = 1, header = TRUE)
 my_data_raw %>% names() %>% smart_name() -> niceNames
 colnames(my_data_raw) <- niceNames
 # UI

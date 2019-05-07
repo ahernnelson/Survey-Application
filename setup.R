@@ -38,6 +38,7 @@ characteristics <- c("type", "gender",
                      "religion", "age", "disability","veteran") %>% smart_name()
 data %>% select(matches("Num|Rank")) %>% names() -> morech
 characteristics <- c(characteristics,morech)
+my_data_raw <- data
 #
 ### data frames for bars ###########
 data %>% select(Religion) %>% table(exclude = NULL) %>% 

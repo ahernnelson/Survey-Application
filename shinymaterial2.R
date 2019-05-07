@@ -13,9 +13,10 @@ ui <- material_page(
         "Demographics" = "diversity_tab",
         "Discrimination on Campus" = "discrim_tab",
         "Campus Climate" = "climate_tab",
-        "Retention and Affiliate Benefits" = "affil_tab"
+        "Retention and Affiliate Benefits" = "affil_tab",
+        "Application" = "app_tab"
       ),
-      icons = c("mood","pie_chart","insert_chart","insert_chart", "insert_chart")
+      icons = c("mood","pie_chart","insert_chart","insert_chart", "insert_chart", "star")
     )
   ),
 ### Introduction tabb ###########
@@ -204,6 +205,35 @@ ui <- material_page(
       material_parallax(image_source = "cat8.gif"),
       material_row(material_card(DTOutput("affil_table")))
     )
+  ),
+### Application Tab ##############
+  material_side_nav_tab_content(
+    side_nav_tab_id = "app_tab",
+    tags$h1("Faculty Equity Application"),
+    material_tabs(c("Plot" = "plot_tab",
+                    "Table" = "table_tab")),
+    material_tab_content(
+      tab_id = "plot_tab",
+      material_row(
+        material_column(
+          width = 4,
+          material_card(
+            material_dropdown(input_id = "dataset",
+                              label = "Choose a category:",
+                              choices = c( "All" = "all",
+                                          "Affiliate" = "affiliate", 
+                                          "Fulltime" = "fulltime"),
+                              selected = "my_data_all"),
+            uiOutput("question_one_selector"),
+            
+            uiOutput("question_two_selector"))),
+        material_column(
+          width=8,
+          plotlyOutput("plot")
+        )
+      ),
+      material_row(material_column(width=4,material_card(DTOutput("data"))))
+    )
   )
 )
 ### Server ########################
@@ -325,6 +355,79 @@ server <- function(input, output) {
   })
   output$affil_table <- renderDT({
     affil_table %>% datatable(options = list(dom='t'))
+  })
+  ## Application Server ####################
+  dataset_input <- reactive({
+    
+    if(input$dataset == "affiliate") {
+      
+      my_data_affiliate_raw <- my_data_raw[my_data_raw$Category == input$dataset, ]
+      
+      my_data_affiliate <- subset(my_data_affiliate_raw, select = -c(1, 17:18, 20:21, 30:31, 48:54, 89:91, 114:115, 123))
+      
+    } else if(input$dataset == "fulltime") {
+      
+      my_data_fulltime_raw <- my_data_raw[my_data_raw$Category == input$dataset, ]
+      
+      my_data_fulltime <- subset(my_data_fulltime_raw, select = -c(1, 28, 33:47, 88, 97, 99:113))
+      
+    } else if(input$dataset == "all") {
+      
+      my_data_all <- my_data_raw
+      
+    }
+    
+  })
+  
+  output$question_one_selector <- renderUI({
+    
+    # DropSelect the first question
+    selectInput(inputId = "question_one",
+                label = "Choose the Question for Rows:", ## changed by Dr. Ribble
+                choices = names(dataset_input())[names(dataset_input()) %in% names(my_data_raw)[c(40:47,87:91, 97:122)]]) ## changed by Dr. Ribble
+  }) 
+  
+  output$question_two_selector <- renderUI({
+    
+    # DropSelect the second question
+    selectInput(inputId = "question_two",
+                label = "Choose the Question for Columns:", ## changed by Dr. Ribble
+                choices = names(dataset_input())[names(dataset_input()) %in% names(my_data_raw)[-c(40:47,87:91, 97:122)]]) ## changed by Dr. Ribble
+  }) 
+  
+  output$data <- renderDT({ ## changed by Dr. Ribble
+    with(dataset_input(), table(get(req(input$question_one)), get(input$question_two))) %>% 
+      data.frame() %>% 
+      rename( q1 = Var1,Response=Var2) %>% 
+      spread(Response, Freq) %>%
+      datatable(options = list(dom='t'))
+    
+  })
+  
+  output$plot <- renderPlotly({ ## Added by James
+    
+    my_table_int <- with(dataset_input(), table(get(req(input$question_two)), get(req(input$question_one))))
+    
+    my_table_pct <- scale(my_table_int, FALSE, colSums(my_table_int)) * 100
+    
+    par(mar = c(6, 12, 6, 2))
+    
+    if(nrow(my_table_pct) == 2) {
+      data.frame(my_table_pct/100) %>% 
+        rename(Response=Var1, q1=Var2 ,perc=Freq) %>% 
+        mutate(plot_text = paste0(round(perc*100,2),"%")) %>%
+        ggplot(aes(text=plot_text)) + geom_col(aes(q1,perc,fill=Response)) + coord_flip() +
+        scale_y_continuous(labels=percent, "Percent")+ theme_bw() + xlab("") -> plot1 
+      ggplotly(plot1, tooltip = "text") %>% config(displayModeBar=F)
+    } else {
+      data.frame(my_table_pct/100) %>% 
+        mutate(plot_text = paste0(round(Freq*100,2),"%")) %>%
+        ggplot() + geom_col(aes(Var2,Freq,fill=Var1)) + coord_flip() +
+        scale_y_continuous(labels=percent, "Percent") + 
+        facet_wrap(facets=~Var1)+ theme_bw() + xlab("")-> p 
+      ggplotly(p, tooltip = "text") %>% config(displayModeBar=F)
+    }
+    
   })
 }
 shinyApp(ui = ui, server = server)
