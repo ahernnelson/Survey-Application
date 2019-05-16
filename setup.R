@@ -225,7 +225,7 @@ data[,c(1,22:28)] %>%
   geom_col(aes(Category,Percent, fill=Type),position = "dodge") +
   coord_flip() + guides(fill = guide_legend(reverse = TRUE)) +
   scale_y_continuous(labels=percent) +
-  ggtitle("Percent Response on Group Effectiveness") + theme_bw(base_size=16)-> group_plot
+  theme_bw(base_size=16)-> group_plot
 group %>% select(Category, Type, count) %>% spread(Type,count) -> group_table
 #
 ### affil plot #####
@@ -238,7 +238,7 @@ data %>% select(`Affil Health Care Benefits`:`Affil Travel Reimbursement`) %>%
   mutate(plot_text = paste0(round(Percent*100,2),"%")) -> affil
   ggplot(affil,aes(x=Category,y=Percent,text=plot_text)) + geom_col() + 
     scale_y_continuous(labels=percent) + theme_bw(base_size=16) + 
-    ggtitle("Important?") + coord_flip() + 
+    coord_flip() + 
     guides(fill = guide_legend(reverse = TRUE)) -> affil_plot
 affil %>% select(Category, count) -> affil
 ### retention plot #####
@@ -251,7 +251,7 @@ data %>% select(`Actively Seeking Other Employment`, contains("Plan To"), Catego
   mutate(plot_text = paste0(round(Percent*100,2),"%")) -> retention
   ggplot(retention,aes(Category,Percent,text=plot_text)) + geom_col(aes(fill=Type),position = "dodge") + 
   coord_flip() + guides(fill = guide_legend(reverse = TRUE))  + theme_bw(base_size=16) +
-  scale_y_continuous(labels=percent) + ggtitle("Retention")  -> retention_plot
+  scale_y_continuous(labels=percent)  -> retention_plot
 retention %>% select(Type, Category, count) %>% spread(Type,count) -> retention_table
 ### List of all plots for final touches ##############
 group_plot <- group_plot + theme(legend.title = element_blank())

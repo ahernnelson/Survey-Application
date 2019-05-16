@@ -1,5 +1,7 @@
 # Wrap shinymaterial apps in material_page
 pacman::p_load("shiny","shinymaterial","DT")
+
+
 source("setup.R")
 ### UI #########################
 ui <- material_page(
@@ -12,7 +14,7 @@ ui <- material_page(
         "Introduction" = "intro_tab",
         "Demographics" = "diversity_tab",
         "Discrimination on Campus" = "discrim_tab",
-        "Campus Climate" = "climate_tab",
+        "Compensation, Value, and Effectiveness" = "climate_tab",
         "Retention and Affiliate Benefits" = "affil_tab",
         "Application" = "app_tab"
       ),
@@ -124,9 +126,9 @@ ui <- material_page(
       tab_id = "first_tab",
       tags$h1("Discrimination on Campus"),
       material_row(
-        plotlyOutput("discrim_plot")
+        plotlyOutput("discrim_plot", height = "600px")
       ),
-      material_parallax(image_source = "cat1.gif"),
+      #material_parallax(image_source = "cat1.gif"),
       material_row(
         material_column(material_card(DTOutput("discrim_table"))),
         material_column(material_card(DTOutput("witness_table")))
@@ -136,9 +138,9 @@ ui <- material_page(
       tab_id = "second_tab",
       tags$h1("Percent Respond Likely to Report"),
       material_row(
-        plotlyOutput("report_plot")
+        plotlyOutput("report_plot",height = "600px")
       ),
-      material_parallax(image_source = "cat2.gif"),
+      #material_parallax(image_source = "cat2.gif"),
       material_row(
        material_card(DTOutput("report_table"))
       )
@@ -147,9 +149,9 @@ ui <- material_page(
       tab_id = "third_tab",
       tags$h1("Percent Comfortable Disclosing Identity"),
       material_row(
-        plotlyOutput("comfort_plot")
+        plotlyOutput("comfort_plot", height = "600px")
       ),
-      material_parallax(image_source = "cat3.gif"),
+      #material_parallax(image_source = "cat3.gif"),
       material_row(
         material_card(DTOutput("comfort_table"))
       )
@@ -167,20 +169,23 @@ ui <- material_page(
     ),
     material_tab_content(
       tab_id = "value_tab",
-      material_row(plotlyOutput("value_plot")),
-      material_parallax(image_source = "cat4.gif"),
+      tags$h1("Do You Feel Valued on Campus?"),
+      material_row(plotlyOutput("value_plot",height = "600px")),
+      #material_parallax(image_source = "cat4.gif"),
       material_row(material_card(DTOutput("value_table")))
     ),
     material_tab_content(
       tab_id = "pay_tab",
-      material_row(plotlyOutput("pay_plot")),
-      material_parallax(image_source = "cat5.gif"),
+      tags$h1("Is Your Compensation Satisfactory"),
+      material_row(plotlyOutput("pay_plot",height = "600px")),
+      #material_parallax(image_source = "cat5.gif"),
       material_row(material_card(DTOutput("pay_table")))
     ),
     material_tab_content(
       tab_id = "group_tab",
-      material_row(plotlyOutput("group_plot")),
-      material_parallax(image_source = "cat6.gif"),
+      tags$h1("Percent Response on Group Effectiveness"),
+      material_row(plotlyOutput("group_plot",height = "600px")),
+      #material_parallax(image_source = "cat6.gif"),
       material_row(material_card(DTOutput("group_table")))
     )
   ),
@@ -195,14 +200,16 @@ ui <- material_page(
     ),
     material_tab_content(
       tab_id = "retention_tab",
-      material_row(plotlyOutput("retention_plot")),
-      material_parallax(image_source = "cat7.gif"),
+      tags$h1("Faculty Retention"),
+      material_row(plotlyOutput("retention_plot",height = "600px")),
+      #material_parallax(image_source = "cat7.gif"),
       material_row(material_card(DTOutput("retention_table")))
     ),
     material_tab_content(
       tab_id = "affil_b_tab",
-      material_row(plotlyOutput("affil_plot")),
-      material_parallax(image_source = "cat8.gif"),
+      tags$h1("Are These Benefits Important?"),
+      material_row(plotlyOutput("affil_plot",height = "600px")),
+      #material_parallax(image_source = "cat8.gif"),
       material_row(material_card(DTOutput("affil_table")))
     )
   ),
