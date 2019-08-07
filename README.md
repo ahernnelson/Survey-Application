@@ -1,4 +1,4 @@
-Survey Application. Data not publicly available 
+Survey Application. **Data not publicly available** 
 
 ### Instructions
 To run the app download the entire repository and run within project.
